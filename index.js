@@ -3,7 +3,10 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 
-import postRoutes from "./routes/magazine.js";
+import magazineRoutes from "./routes/magazines.js";
+import userRoutes from "./routes/user.js";
+import userComments from "./routes/comments.js";
+import closureRoutes from "./routes/closure.js";
 
 const app = express();
 dotenv.config();
@@ -12,7 +15,14 @@ app.use(express.json({ limit: "10mb", extended: true }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use(cors());
 
-app.use("/posts", postRoutes);
+app.get("/", (req, res) => {
+  res.send("API For Uni Magazine M.E.R.N. Project");
+});
+
+app.use("/posts", magazineRoutes);
+app.use("/user", userRoutes);
+app.use("/comments", userComments);
+app.use("/closure", closureRoutes);
 
 const PORT = process.env.PORT || 5000;
 

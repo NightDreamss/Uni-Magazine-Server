@@ -2,20 +2,19 @@ import mongoose from "mongoose";
 
 const postSchema = mongoose.Schema({
   title: String,
+  name: String,
+  creator: String,
   desc: String,
   image: String,
-  student: String,
   status: Boolean,
   Counter: {
-    type: Number,
-    default: 0,
+    type: [String],
+    default: [],
   },
-  date: {
+  dateCreated: {
     type: Date,
-    default: new Date(),
+    default: () => new Date().toISOString(),
   },
 });
 
-const PostMagazine = mongoose.model("PostMagazine", postSchema);
-
-export default PostMagazine;
+export default mongoose.model("PostMagazine", postSchema);
