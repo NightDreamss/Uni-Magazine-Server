@@ -42,7 +42,7 @@ export const signin = async (req, res) => {
 
     const token = jwt.sign(
       { email: currentUser.email, id: currentUser._id },
-      "test",
+      process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
@@ -63,7 +63,8 @@ export const signup = async (req, res) => {
     if (password !== confirmPassword)
       return res.status(400).json({ message: "Passwords don't match" });
 
-    const bcrpytPassword = await bcrypt.hash(password, 10);
+    const salt = await bcrypt.genSalt();
+    const bcrpytPassword = await bcrypt.hash(password, salt);
 
     const result = await User.create({
       email,
@@ -71,9 +72,15 @@ export const signup = async (req, res) => {
       name,
       account,
     });
-    const token = jwt.sign({ email: result.email, id: result._id }, "test", {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { email: result.email, id: result._id },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
+
+    res.cookie("token", token, { httpOnly: true }).send();
 
     res.status(200).json({ result, token });
   } catch (error) {
